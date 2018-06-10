@@ -50,16 +50,16 @@ void turn_off (unsigned char pin)
 /*Buttons*/
 void button (void)
 {
-	write_reg(GPIOC_ODR, read_reg(GPIOA_IDR, 1) << LD3_PIN);
+	write_reg(GPIOC_ODR, read_reg(GPIOA_IDR, 1) << LD4_PIN);
 	
 	#if 0
 	if(read_reg(GPIOA_IDR, 1) == 1)
 	{
-		turn_on(LD3_PIN);
+		turn_on(LD4_PIN);
 	}
 	else 
 	{
-		turn_off(LD3_PIN);
+		turn_off(LD4_PIN);
 	}
 	#endif
 }
