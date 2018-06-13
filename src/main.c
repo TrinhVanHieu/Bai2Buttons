@@ -46,22 +46,24 @@ void turn_off (unsigned char pin)
 {
 	write_reg(GPIOC_OBSRR, 1 << (pin + 16));
 }
-
+int a;
 /*Buttons*/
 void button (void)
 {
-	write_reg(GPIOC_ODR, read_reg(GPIOA_IDR, 1) << LD4_PIN);
-	
-	#if 0
-	if(read_reg(GPIOA_IDR, 1) == 1)
+	int check = read_reg(GPIOA_IDR, 1);
+	if (check == 1)
 	{
-		turn_on(LD4_PIN);
+		if (a == 1)
+		{
+			turn_on (LD4_PIN);
+			a = 0;
+		}
+		else
+		{
+			turn_off(LD4_PIN);
+			a = 1;
+		}
 	}
-	else 
-	{
-		turn_off(LD4_PIN);
-	}
-	#endif
 }
 void main(void)
 {
@@ -69,9 +71,10 @@ void main(void)
 	enable_clock();
 	/*init_pin*/
 	init_pin();
+	
   while(1)
   {
-	button();
+	button ();
   }
 }
 
