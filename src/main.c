@@ -33,8 +33,15 @@ void enable_clock(void)
 /*set mode GC8 - GC9*/
 void init_pin (void)
 {
-	write_reg(GPIOC_MODER, 0x00050000u); /*init pin pc8 - pc9*/
-	read_reg(GPIOA_MODER, GPIO_MODE_INPUT);
+	/*init Pc8 Pc9*/
+	unsigned long int tmpreg; 
+    tmpreg = read_reg(GPIOC_MODER, ~(0x0fu << 16)); //reset port  pc9 pc8
+    tmpreg = tmpreg | (0x05 << 16); 
+    write_reg(GPIOC_MODER, tmpreg);
+	/*init buttons PA0*/
+    tmpreg = read_reg(GPIOA_MODER, ~(0x03u << 0)); //reset PA0
+    tmpreg = tmpreg | (GPIO_MODE_INPUT << 0); 
+    write_reg(GPIOA_MODER, tmpreg);
 }
 
 /*ON - OFF led*/
@@ -46,35 +53,31 @@ void turn_off (unsigned char pin)
 {
 	write_reg(GPIOC_OBSRR, 1 << (pin + 16));
 }
-int a;
-/*Buttons*/
-void button (void)
-{
-	int check = read_reg(GPIOA_IDR, 1);
-	if (check == 1)
-	{
-		if (a == 1)
-		{
-			turn_on (LD4_PIN);
-			a = 0;
-		}
-		else
-		{
-			turn_off(LD4_PIN);
-			a = 1;
-		}
-	}
-}
+
 void main(void)
 {
 	/*enable clock*/
 	enable_clock();
 	/*init_pin*/
 	init_pin();
-	
+	unsigned int buttons;
+	unsigned int state = 0;
   while(1)
   {
-	button ();
+	buttons = read_reg (GPIOA_IDR, 1 << 0);
+	if (1 == buttons)
+	{
+		if (1 == state) 
+		{
+			turn_on(LD3_PIN);
+			state = 0;
+		}
+		else 
+		{
+			turn_off(LD3_PIN);
+			state = 1;
+		}
+	}
   }
 }
 
