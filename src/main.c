@@ -36,7 +36,7 @@ void init_pin (void)
 	/*init Pc8 Pc9*/
 	unsigned long int tmpreg; 
     tmpreg = read_reg(GPIOC_MODER, ~(0x0fu << 16)); //reset port  pc9 pc8
-    tmpreg = tmpreg | (0x05 << 16); 
+    tmpreg = tmpreg | (0x05u << 16); 
     write_reg(GPIOC_MODER, tmpreg);
 	/*init buttons PA0*/
     tmpreg = read_reg(GPIOA_MODER, ~(0x03u << 0)); //reset PA0
